@@ -6,16 +6,16 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  //   @Post('login')
-  //   async login(@Body() loginDto: LoginDto) {
-  //     const user = await this.authService.login(loginDto);
+  @Post('login')
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.login(loginDto);
 
-  //     return {
-  //       status: 'success',
-  //       statusCode: '',
-  //       message: '',
-  //       data: {},
-  //       access_token: '',
-  //     };
-  //   }
+    return {
+      status: 'success',
+      statusCode: '',
+      message: '',
+      data: {},
+      access_token: '',
+    };
+  }
 }

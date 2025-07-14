@@ -4,13 +4,14 @@ import {
   Column,
   OneToMany,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('roles')
 export class Role {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ unique: true })
   name: string;
@@ -18,7 +19,10 @@ export class Role {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
+  @UpdateDateColumn({ name: 'modified_at' })
+  modifiedAt: Date;
+
   // This will not create a separate column, its just virtual mapping for reverse traversal
-  @OneToMany(() => User, (user) => user.role)
+  @OneToMany(() => User, (user) => user.roleId)
   users: User[];
 }

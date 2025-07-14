@@ -20,7 +20,7 @@ export const getTypeOrmConfig = (
 
   // If you're using synchronize: false (recommended for production), run migrations:
   // npx typeorm migration:run
-  synchronize: false,
+  synchronize: true,
 
   // Enable query logging in dev only (remove or conditionally control in prod)
   logging: true,
