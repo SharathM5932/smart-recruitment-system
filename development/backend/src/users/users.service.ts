@@ -44,4 +44,28 @@ export class UsersService {
     const savedUser = await this.userRepo.save(newUser);
     return { name: savedUser.name };
   }
+
+  async getAllUser() {
+    const users = await this.userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
+      .select([
+        'user.id',
+        'user.name',
+        'user.email',
+        'user.phone',
+        'user.createdAt',
+        'role.name',
+      ])
+      .getMany();
+
+    return users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role.name,
+      createdAt: user.createdAt,
+    }));
+  }
 }

@@ -11,11 +11,10 @@ export class AuthController {
     const user = await this.authService.login(loginDto);
 
     return {
-      status: 'success',
-      statusCode: '',
-      message: '',
-      data: {},
-      access_token: '',
+      statusCode: '200',
+      message: 'User login successfully.',
+      data: user.user,
+      access_token: user.token,
     };
   }
 }

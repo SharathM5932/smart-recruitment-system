@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
@@ -12,7 +12,18 @@ export class UsersController {
 
     return {
       statusCode: '201',
-      message: 'User created successfully',
+      message: 'User created successfully.',
+      data: user,
+    };
+  }
+
+  @Get()
+  async getAllUser() {
+    const user = await this.userService.getAllUser();
+
+    return {
+      statusCode: '200',
+      message: 'All users are retrieved successfully.',
       data: user,
     };
   }
