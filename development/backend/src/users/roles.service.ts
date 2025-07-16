@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from './entities/role.entity';
+import { Role } from './entity/role.entity';
 import { Repository } from 'typeorm';
+import { CreateRoleDto } from './dto/create-role.dto';
 
 @Injectable()
 export class RolesService {
@@ -20,5 +21,19 @@ export class RolesService {
     }
 
     return roles;
+  }
+
+   async create(dto: CreateRoleDto) {
+    if (!dto.name) {
+      throw new BadRequestException('Role name is required');
+    }
+
+    const exists = await this.roleRepo.findOneBy({ name: dto.name });
+    if (exists) {
+      throw new BadRequestException('Role already exists');
+    }
+
+    const role = this.roleRepo.create(dto);
+    return this.roleRepo.save(role);
   }
 }

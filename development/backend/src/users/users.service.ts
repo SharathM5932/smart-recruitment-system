@@ -2,8 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
-import { Role } from './entities/role.entity';
+import { User } from './entity/user.entity';
+import { Role } from './entity/role.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -43,29 +43,5 @@ export class UsersService {
 
     const savedUser = await this.userRepo.save(newUser);
     return { name: savedUser.name };
-  }
-
-  async getAllUser() {
-    const users = await this.userRepo
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'role')
-      .select([
-        'user.id',
-        'user.name',
-        'user.email',
-        'user.phone',
-        'user.createdAt',
-        'role.name',
-      ])
-      .getMany();
-
-    return users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role.name,
-      createdAt: user.createdAt,
-    }));
   }
 }
