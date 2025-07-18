@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { TestService } from './evaluation.service';
 
-@Controller('evaluation')
-export class EvaluationController {}
+@Controller('test')
+export class TestController {
+  constructor(private readonly testService: TestService) {}
+
+  @Post('generate-link')
+  async generateLink(@Body() dto: any) {
+    return this.testService.generateLink(dto);
+  }
+}
