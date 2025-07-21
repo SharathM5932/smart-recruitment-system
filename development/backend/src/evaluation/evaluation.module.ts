@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TestService } from './evaluation.service';
-import { TestController } from './evaluation.controller';
+import { EvaluationService } from './evaluation.service';
+import { EvaluationController } from './evaluation.controller';
 import { Applicant } from './entity/applicant.entity';
 import { Skill } from 'src/skills/entity/skill.entity'; 
 import { Question } from 'src/question-bank/entity/question.entity';
@@ -25,7 +25,7 @@ import { ExperienceLevel } from './entity/experience_levels.entity';
       Job,
     ]),
   ],
-  controllers: [TestController],
-  providers: [TestService, SendMailService],
+  controllers: [EvaluationController],
+  providers: [EvaluationService, SendMailService],
 })
 export class TestModule {}

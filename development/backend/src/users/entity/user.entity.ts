@@ -6,8 +6,11 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Role } from './role.entity';
+import { Job } from 'src/jobs/entity/jobs.entity';
+import { Question } from 'src/question-bank/entity/question.entity';
 
 @Entity('users')
 export class User {
@@ -38,4 +41,7 @@ export class User {
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
   @JoinColumn({ name: 'role_id' })
   role: Role;
+
+  @OneToMany(() => Job, (job) => job.createdBy)
+  job: Job[];
 }

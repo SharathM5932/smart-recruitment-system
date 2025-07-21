@@ -1,4 +1,3 @@
-// src/applicant-questions/applicant-question.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicantQuestion } from './entity/applicant_questions.entity';
@@ -9,6 +8,6 @@ import { ApplicantQuestionController } from './applicant-questions.controller';
   imports: [TypeOrmModule.forFeature([ApplicantQuestion])],
   controllers: [ApplicantQuestionController],
   providers: [ApplicantQuestionService],
-  exports: [ApplicantQuestionService], // optional, if used in other modules
+  exports: [ApplicantQuestionService], 
 })
 export class ApplicantQuestionModule {}

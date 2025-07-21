@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from 'src/users/entity/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('jobs')
 export class Job {
@@ -13,4 +14,8 @@ export class Job {
 
   @Column({ type: 'text', nullable: true })
   description: string;
+
+  @ManyToOne(() => User, (user) => user.job)
+  @JoinColumn({ name: 'created_by_id' })
+  createdBy: User;
 }

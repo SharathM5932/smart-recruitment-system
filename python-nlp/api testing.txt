@@ -1,0 +1,19 @@
+{
+  "questions": [
+    "What is Javascript?",
+    "what is machine learning",
+    "What is artificial intelligence.",
+    "Define artificial intelligence",
+    "Define AI",
+    "Explain artificial intelligence",
+    "what is the output of 2+2",
+    "what is the output of 2+4",
+    "A train 150 meters long is running at a speed of 60 km/hr. In how much time will it pass a man standing on the platform?",
+    "A train 200 meters long is running at a speed of 72 km/hr. In how much time will it pass a man standing on the platform?",
+    "who uses Python?",
+    "what is Python?",
+    "why is the Python important in Data Science?",
+    "define Python"
+  ]
+}
+====================================================
