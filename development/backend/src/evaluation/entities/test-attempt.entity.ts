@@ -74,6 +74,9 @@ export class TestAttempt {
   @JoinColumn({ name: 'last_question_id' })
   last_question: McqQuestion;
 
+  @Column({ type: 'boolean', default: false })
+  is_submitted: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

@@ -74,6 +74,7 @@ export class EvaluationService {
         | 'Junior'
         | 'Mid'
         | 'Senior';
+
       const difficultyMatrix = {
         Fresher: { easy: 80, medium: 20, hard: 0 },
         Junior: { easy: 50, medium: 40, hard: 10 },
@@ -245,7 +246,7 @@ export class EvaluationService {
 
         if (hasSecondary) {
           const secondaryQ = await fetchQuestionsBySkill(
-            dto.secondary_skill_id as string,
+            dto.secondary_skill_id!,
             skillQuestionCount,
             false,
           );
@@ -255,15 +256,7 @@ export class EvaluationService {
         return result;
       };
 
-      const questions = await generateQuestions();
-      const token = uuidv4();
-
-      try {
-        await this.mailService.sendToken(dto.email, token);
-      } catch (err) {
-        throw new InternalServerErrorException('Email sending failed');
-      }
-
+      // Save applicant
       const applicant = this.applicantRepo.create({
         name: dto.name,
         email: dto.email,
@@ -275,34 +268,56 @@ export class EvaluationService {
           : undefined,
       });
 
+      const existingApplicant = await this.applicantRepo.findOne({
+        where: { email: dto.email },
+      });
+
+      if (existingApplicant) {
+        throw new BadRequestException(
+          'Applicant with this email already exists',
+        );
+      }
+
       const savedApplicant = await queryRunner.manager.save(applicant);
 
-      const testAttempt = this.attemptRepo.create({
-        applicant: { id: savedApplicant.id },
-        job: { id: dto.job_id },
-        ta: { id: dto.ta_id },
-        test_status: 'pending',
-        schedule_start: new Date(),
-        schedule_end: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      });
+      // Send test token
+      const token = uuidv4();
+      try {
+        await this.mailService.sendToken(dto.email, token);
+      } catch (err) {
+        throw new InternalServerErrorException('Email sending failed');
+      }
 
-      const savedAttempt = await queryRunner.manager.save(testAttempt);
+      const savedAttempt = await queryRunner.manager.save(
+        this.attemptRepo.create({
+          applicant: { id: savedApplicant.id },
+          job: { id: dto.job_id },
+          ta: { id: dto.ta_id },
+          test_status: 'pending',
+          schedule_start: new Date(),
+          schedule_end: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        }),
+      );
 
-      const tokenEntity = this.tokenRepo.create({
-        token,
-        test_attempt: savedAttempt,
-        is_used: false,
-        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      });
-      await queryRunner.manager.save(tokenEntity);
+      await queryRunner.manager.save(
+        this.tokenRepo.create({
+          token,
+          test_attempt: savedAttempt,
+          is_used: false,
+          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        }),
+      );
+
+      const questions = await generateQuestions();
 
       for (const question of questions) {
-        const aq = this.applicantQuestionRepo.create({
-          applicant: savedApplicant,
-          test_attempt: savedAttempt,
-          mcq_question: question,
-        });
-        await queryRunner.manager.save(aq);
+        await queryRunner.manager.save(
+          this.applicantQuestionRepo.create({
+            applicant: savedApplicant,
+            test_attempt: savedAttempt,
+            mcq_question: question,
+          }),
+        );
       }
 
       await queryRunner.commitTransaction();
@@ -314,7 +329,6 @@ export class EvaluationService {
       };
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      console.error('Transaction failed:', err);
       throw err;
     } finally {
       await queryRunner.release();
