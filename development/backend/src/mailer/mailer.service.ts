@@ -11,8 +11,13 @@ export class MailerService {
     },
   });
 
-  async sendToken(email: string, token: string) {
-    const link = `http://localhost:3000/assessment/${token}`;
+  async sendToken(
+    email: string,
+    token: string,
+    applicant_id: string,
+    attempt_id: string,
+  ) {
+    const link = `http://localhost:3000/assessment/${token}/${applicant_id}/${attempt_id}`;
 
     try {
       await this.transporter.sendMail({

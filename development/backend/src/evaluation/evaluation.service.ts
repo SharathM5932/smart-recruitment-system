@@ -280,14 +280,6 @@ export class EvaluationService {
 
       const savedApplicant = await queryRunner.manager.save(applicant);
 
-      // Send test token
-      const token = uuidv4();
-      try {
-        await this.mailService.sendToken(dto.email, token);
-      } catch (err) {
-        throw new InternalServerErrorException('Email sending failed');
-      }
-
       const savedAttempt = await queryRunner.manager.save(
         this.attemptRepo.create({
           applicant: { id: savedApplicant.id },
@@ -299,6 +291,20 @@ export class EvaluationService {
         }),
       );
 
+      const attemptId = savedAttempt.id;
+
+      // Send test token
+      const token = uuidv4();
+      try {
+        await this.mailService.sendToken(
+          dto.email,
+          token,
+          savedApplicant.id,
+          attemptId,
+        );
+      } catch (err) {
+        throw new InternalServerErrorException('Email sending failed');
+      }
       await queryRunner.manager.save(
         this.tokenRepo.create({
           token,
@@ -323,6 +329,7 @@ export class EvaluationService {
       await queryRunner.commitTransaction();
 
       return {
+        statusCode: 201,
         message: 'Test link sent successfully',
         token,
         questionCount: questions.length,
