@@ -50,10 +50,10 @@ export class TestAttempt {
   @Column({ type: 'timestamp', nullable: true })
   applicant_completed_at: Date;
 
-  @Column({ type: 'int', default: 30 })
+  @Column({ type: 'int', default: 15 })
   coding_duration_minutes: number;
 
-  @Column({ type: 'int', default: 15 })
+  @Column({ type: 'int', default: 30 })
   mcq_duration_minutes: number;
 
   @Column({ type: 'int', default: 45 })
@@ -66,6 +66,9 @@ export class TestAttempt {
   @JoinColumn({ name: 'last_question_id' })
   last_question: Question;
 
+  @Column({ type: 'boolean', default: false })
+  is_submitted: boolean;
+  
   @CreateDateColumn()
   created_at: Date;
 

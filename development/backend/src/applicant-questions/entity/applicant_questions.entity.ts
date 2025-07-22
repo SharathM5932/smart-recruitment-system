@@ -3,10 +3,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  Column,
 } from 'typeorm';
 import { Applicant } from 'src/evaluation/entity/applicant.entity';
 import { Question } from 'src/question-bank/entity/question.entity';
 import { TestAttempt } from 'src/evaluation/entity/test-attempt.entity';
+import { Option } from 'src/question-bank/entity/option.entity';
 
 @Entity('applicant_questions')
 export class ApplicantQuestion {
@@ -24,4 +26,5 @@ export class ApplicantQuestion {
   @ManyToOne(() => TestAttempt, { eager: false })
   @JoinColumn({ name: 'test_attempt_id' })
   test_attempt: TestAttempt;
+
 }
