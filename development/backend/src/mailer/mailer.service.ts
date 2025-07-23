@@ -17,8 +17,8 @@ export class MailerService {
     applicant_id: string,
     attempt_id: string,
   ) {
-    const link = `http://localhost:3000/assessment/${token}/${applicant_id}/${attempt_id}`;
-
+    // const link = `http://localhost:3000/assessment/${token}/${applicant_id}/${attempt_id}`;
+    const link = `http://localhost:5173/test/${token}/${applicant_id}/${attempt_id}`;
     try {
       await this.transporter.sendMail({
         from: process.env.MAIL_USER,
@@ -27,7 +27,7 @@ export class MailerService {
         html: `<p>Click the following link to take the test:</p><a href="${link}">${link}</a>`,
       });
     } catch (err) {
-      console.error('❌ Failed to send email:', err);
+      console.error('Failed to send email:', err);
       throw new Error('Failed to send test link email');
     }
   }
