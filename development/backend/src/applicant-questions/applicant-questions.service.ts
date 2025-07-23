@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ApplicantQuestion } from './entities/applicant_questions.entity';
 import { ApplicantAnswer } from 'src/applicants/entities/applicant-answer.entity';
 import { Option } from 'src/question-bank/entities/option.entity';
+import { TestAttempt } from 'src/evaluation/entities/test-attempt.entity';
 
 @Injectable()
 export class ApplicantQuestionService {
@@ -16,6 +17,9 @@ export class ApplicantQuestionService {
 
     @InjectRepository(Option)
     private readonly optionRepo: Repository<Option>,
+
+    @InjectRepository(TestAttempt)
+    private readonly attemptRepo: Repository<TestAttempt>,
   ) {}
 
   // 1. Get all assigned questions
@@ -38,7 +42,7 @@ export class ApplicantQuestionService {
   ) {
     const option = await this.optionRepo.findOne({
       where: { id: selectedOptionId },
-      relations: ['question'],
+      relations: ['mcqQuestion'],
     });
 
     if (!option || option.mcqQuestion.id !== questionId) {
@@ -109,7 +113,7 @@ export class ApplicantQuestionService {
 
     const total = answers.length;
     const correct = answers.filter((a) => a.selected_option?.isCorrect).length;
-
+    await this.attemptRepo.update({ id: attemptId }, { mcq_score: correct });
     return {
       total,
       correct,
